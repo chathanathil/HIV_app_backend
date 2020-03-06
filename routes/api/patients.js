@@ -115,9 +115,9 @@ router.get(
   //   passport.authenticate("patient", { session: false }),
   (req, res) => {
     Councellor.find().then(cslr => {
-      if (cslr.length === 0) {
-        res.json({ msg: "No councelling centers" });
-      }
+      // if (cslr.length === 0) {
+      //   res.json({ msg: "No councelling centers" });
+      // }
       res.json(cslr);
     });
   }
@@ -126,9 +126,9 @@ router.get(
 // Councellor By Id
 router.get("/councellor/:id", (req, res) => {
   Councellor.findById(req.params.id).then(cslr => {
-    if (cslr.length === 0) {
-      res.json({ msg: "Data not found" });
-    }
+    // if (cslr.length === 0) {
+    //   res.json({ msg: "Data not found" });
+    // }
     res.json(cslr);
   });
 });
@@ -139,9 +139,9 @@ router.get(
   // passport.authenticate("patient", { session: false }),
   (req, res) => {
     Doctor.find().then(dr => {
-      if (dr.length === 0) {
-        res.json({ msg: "No doctors" });
-      }
+      // if (dr.length === 0) {
+      //   res.json({ msg: "No doctors" });
+      // }
       res.json(dr);
     });
   }
@@ -150,9 +150,9 @@ router.get(
 // Doctor By Id
 router.get("/doctor/:id", (req, res) => {
   Doctor.findById(req.params.id).then(dr => {
-    if (dr.length === 0) {
-      res.json({ msg: "Data not found" });
-    }
+    // if (dr.length === 0) {
+    //   res.json({ msg: "Data not found" });
+    // }
     res.json(dr);
   });
 });
@@ -173,9 +173,9 @@ router.post(
 
     Doctor.findById(req.body.doctor)
       .then(dr => {
-        if (dr.length === 0) {
-          return res.json({ msg: "Dr not found" });
-        }
+        // if (dr.length === 0) {
+        //   return res.json({ msg: "Dr not found" });
+        // }
         dr.appointments.map(item => {
           if (
             item.date.day === day &&
@@ -240,9 +240,9 @@ router.get(
   passport.authenticate("patient", { session: false }),
   (req, res) => {
     Status.find({ medicine: req.params.id }).then(st => {
-      if (st.length === 0) {
-        res.json({ msg: "Status not updated" });
-      }
+      // if (st.length === 0) {
+      //   res.json({ msg: "Status not updated" });
+      // }
       res.json(st);
     });
   }
@@ -254,9 +254,9 @@ router.get(
   passport.authenticate("patient", { session: false }),
   (req, res) => {
     Medicine.findById(req.params.id).then(med => {
-      if (med.length === 0) {
-        return res.json({ msg: "No key" });
-      }
+      // if (med.length === 0) {
+      //   return res.json({ msg: "No key" });
+      // }
       res.json({ key: med.key });
     });
   }
@@ -297,9 +297,9 @@ router.get(
   (req, res) => {
     Result.find({ patient: req.user.id })
       .then(results => {
-        if (results.length === 0) {
-          return res.json({ msg: "No results" });
-        }
+        // if (results.length === 0) {
+        //   return res.json({ msg: "No results" });
+        // }
         res.json(results);
       })
       .catch(err => res.json(err));

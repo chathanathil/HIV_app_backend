@@ -207,10 +207,10 @@ router.post(
 
 // Get medicines of a patient
 router.get(
-  "/medicines",
+  "/medicines/:id",
   passport.authenticate("doctor", { session: false }),
   (req, res) => {
-    Medicine.find({ patient: req.body.patient })
+    Medicine.find({ patient: req.params.id })
       .then(med => {
         if (med.length === 0) {
           return res.json({ msg: "No medcines given" });
