@@ -167,51 +167,10 @@ router.post(
     newBooking.patient = req.user.id;
     newBooking.date = req.body.date;
 
-    day = req.body.date.split("/")[0];
-    month = req.body.date.split("/")[1];
-    year = req.body.date.split("/")[2];
-
-    Doctor.findById(req.body.doctor)
-      .then(dr => {
-        // if (dr.length === 0) {
-        //   return res.json({ msg: "Dr not found" });
-        // }
-        dr.appointments.map(item => {
-          if (
-            item.date.day === day &&
-            item.date.month === month &&
-            item.date.year === year
-          ) {
-            if (item.booking >= item.max) {
-              return res.json({ msg: "Booking closed in this date" });
-            } else {
-              Doctor.findOneAndUpdate(
-                {
-                  $and: [
-                    { _id: req.body.doctor },
-                    { "appointments.date.day": day },
-                    { "appointments.date.month": month },
-                    { "appointments.date.year": year }
-                  ]
-                },
-                {
-                  $inc: {
-                    "appointments.$.booking": 1
-                  }
-                }
-              )
-                .then(book => {
-                  Appointment.findOne({ patient: req.user.id })
-                    .then(apt => {
-                      new Appointment(newAppointment).save().then(apt => {
-                        res.json(apt);
-                      });
-                    })
-                    .catch(err => res.json(err));
-                })
-                .catch(err => res.json(err));
-            }
-          }
+    Appointment.findOne({ patient: req.user.id })
+      .then(apt => {
+        new Appointment(newAppointment).save().then(apt => {
+          res.json(apt);
         });
       })
       .catch(err => res.json(err));
