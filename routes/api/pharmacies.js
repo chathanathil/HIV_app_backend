@@ -113,11 +113,31 @@ router.get(
   "/medicines",
   passport.authenticate("pharmacy", { session: false }),
   (req, res) => {
-    Medicine.find({ pharmacy: req.user.id })
+    Medicine.find()
+      .populate("doctor")
+      .populate("patient")
       .then(med => {
-        if (med.length === 0) {
-          return res.json({ msg: "No medcines given" });
-        }
+        // if (med.length === 0) {
+        //   return res.json({ msg: "No medcines given" });
+        // }
+        res.json(med);
+      })
+      .catch(err => res.json(err));
+  }
+);
+
+// Medicine by id
+router.get(
+  "/medicine/:id",
+  passport.authenticate("pharmacy", { session: false }),
+  (req, res) => {
+    Medicine.findById(req.params.id)
+      .populate("doctor")
+      .populate("patient")
+      .then(med => {
+        // if (med.length === 0) {
+        //   return res.json({ msg: "No medcines given" });
+        // }
         res.json(med);
       })
       .catch(err => res.json(err));
@@ -126,12 +146,12 @@ router.get(
 
 // Dispatch medicine
 router.patch(
-  "/dispatch",
+  "/dispatch/:id",
   passport.authenticate("pharmacy", { session: false }),
   (req, res) => {
     var key = random();
     Medicine.findOneAndUpdate(
-      { _id: req.body.medicine },
+      { _id: req.params.id },
       {
         $set: {
           key: key,

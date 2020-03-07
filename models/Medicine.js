@@ -26,7 +26,9 @@ const MedicineSchema = new Schema({
   key: {
     type: String
   },
-  medicines: [String]
+  medicines: {
+    type: String
+  }
 });
 
 module.exports = Medicine = mongoose.model("medicines", MedicineSchema);

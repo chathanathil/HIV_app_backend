@@ -12,6 +12,7 @@ const patients = require("./routes/api/patients");
 const chats = require("./routes/api/chats");
 
 const DoctorChat = require("./models/DoctorChat");
+const CouncellorChat = require("./models/CouncellorChat");
 
 const app = express();
 
@@ -53,6 +54,29 @@ io.on("connection", socket => {
             .populate("sender")
             .exec((err, doc) => {
               return io.emit("Output DR Chat Message", doc);
+            });
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  socket.on("Message from councellor", msg => {
+    connect.then(db => {
+      try {
+        let councellorChat = new CouncellorChat({
+          message: msg.chatMessage,
+          sender: msg.sender,
+          receiver: msg.receiver
+        });
+        councellorChat.save((err, doc) => {
+          // if (err) return res.json({ success: false, err });
+          console.log(err);
+          CouncellorChat.find({ _id: doc._id })
+            .populate("sender")
+            .exec((err, doc) => {
+              return io.emit("Output CR Chat Message", doc);
             });
         });
       } catch (err) {

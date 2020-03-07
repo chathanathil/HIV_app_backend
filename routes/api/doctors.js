@@ -136,6 +136,7 @@ router.get(
   passport.authenticate("doctor", { session: false }),
   (req, res) => {
     Result.find({ patient: req.params.id })
+      .populate("doctor")
       .then(result => {
         if (result.length === 0) {
           return res.json({ msg: "No results uploaded" });
@@ -177,12 +178,12 @@ router.post(
     newMedicine.patient = req.body.patient;
     newMedicine.pharmacy = req.body.pharmacy;
     newMedicine.date = req.body.date;
-    newMedicine.medicines = [];
+    newMedicine.medicines = req.body.medicines;
 
     Medicine.findOne({ doctor: req.user.id }).then(med => {
-      req.body.medicine.map(item => {
-        return newMedicine.medicines.push(item);
-      });
+      // req.body.medicine.map(item => {
+      //   return newMedicine.medicines.push(item);
+      // });
       new Medicine(newMedicine).save().then(med => {
         res.json(med);
         const newStatus = {};
@@ -211,10 +212,11 @@ router.get(
   passport.authenticate("doctor", { session: false }),
   (req, res) => {
     Medicine.find({ patient: req.params.id })
+      .populate("doctor")
       .then(med => {
-        if (med.length === 0) {
-          return res.json({ msg: "No medcines given" });
-        }
+        // if (med.length === 0) {
+        //   return res.json({ msg: "No medcines given" });
+        // }
         res.json(med);
       })
       .catch(err => res.json(err));

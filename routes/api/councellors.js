@@ -17,21 +17,23 @@ router.get("/test", (req, res) => {
 
 //signup
 router.post("/signup", (req, res) => {
+  password = req.body.password;
+
   Councellor.findOne({ _id: req.body.id })
     .then(cslr => {
       if (cslr === null) {
         return res.status(400).json({ msg: "Check your id" });
-      } else if (cslr.password.length != 0) {
+      } else if (cslr.password != null) {
         return res.status(400).json({ msg: "You are already registered" });
       } else {
         bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(req.body.password, salt, (err, hash) => {
+          bcrypt.hash(password, salt, (err, hash) => {
             if (err) throw err;
-            req.body.password = hash;
+            password = hash;
 
             Councellor.findOneAndUpdate(
               { _id: req.body.id },
-              { $set: { password: req.body.password } }
+              { $set: { password: password } }
             )
               .then(cslr => {
                 const payload = {
@@ -57,7 +59,7 @@ router.post("/signup", (req, res) => {
         });
       }
     })
-    .catch(err => res.json({ msg: "Check your id" }));
+    .catch(err => res.json(err));
 });
 
 // Login
@@ -121,11 +123,11 @@ router.post(
 
 // Open patient account
 router.get(
-  "/patients/open",
-  // passport.authenticate("councellor", { session: false }),
+  "/patients/open/:id",
+  passport.authenticate("councellor", { session: false }),
   (req, res) => {
-    patient = req.body.patient;
-    Patient.findById(patient)
+    id = req.params.id;
+    Patient.findById(id)
       .then(pts => {
         if (!pts) {
           return res.status(404).json({ msg: "Patient not found" });
