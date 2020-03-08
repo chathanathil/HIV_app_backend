@@ -169,7 +169,7 @@ router.post(
 
     Appointment.findOne({ patient: req.user.id })
       .then(apt => {
-        new Appointment(newAppointment).save().then(apt => {
+        new Appointment(newBooking).save().then(apt => {
           res.json(apt);
         });
       })
@@ -262,6 +262,26 @@ router.get(
         res.json(results);
       })
       .catch(err => res.json(err));
+  }
+);
+
+// Add result
+router.post(
+  "/result/add",
+  passport.authenticate("patient", { session: false }),
+  (req, res) => {
+    const newResult = {};
+    newResult.patient = req.user.id;
+    newResult.date = req.body.date;
+    newResult.subject = req.body.subject;
+    newResult.description = req.body.description;
+    newResult.result = req.body.result;
+
+    Result.findOne({ patient: req.user.id }).then(rst => {
+      new Result(newResult).save().then(rst => {
+        res.json(rst);
+      });
+    });
   }
 );
 

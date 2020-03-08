@@ -14,6 +14,7 @@ const Result = require("../../models/Result");
 const Patient = require("../../models/Patient");
 const Medicine = require("../../models/Medicine");
 const Status = require("../../models/Status");
+const Appointment = require("../../models/Appointments");
 
 // test
 router.get("/test", (req, res) => {
@@ -306,6 +307,18 @@ router.patch(
         });
       }
     });
+  }
+);
+
+router.get(
+  "/bookings",
+  passport.authenticate("doctor", { session: false }),
+  (req, res) => {
+    Appointment.find({ doctor: req.body.doctor })
+      .then(result => {
+        res.json(result);
+      })
+      .catch(err => res.json(err));
   }
 );
 
